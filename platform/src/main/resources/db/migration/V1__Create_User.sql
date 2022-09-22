@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS `user`;
---CREATE TABLE USER
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `firstname` varchar(255) DEFAULT NULL,
