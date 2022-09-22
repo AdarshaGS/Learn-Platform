@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath />
 	</parent>
 	<groupId>com.website</groupId>
 	<artifactId>platform</artifactId>
@@ -102,13 +102,7 @@
 					<password>mysql</password>
 					<schemas>
 						<schema>website</schema>
-						<!-- <schema>schema2</schema>
-							<schema>schema3</schema> -->
 					</schemas>
-					<placeholders>
-						<!-- <keyABC>valueXYZ</keyABC>
-							<otherplaceholder>value123</otherplaceholder> -->
-					</placeholders>
 				</configuration>
 			</plugin>
 		</plugins>
