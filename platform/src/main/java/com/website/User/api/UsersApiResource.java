@@ -1,8 +1,10 @@
 package com.website.User.api;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +35,12 @@ public class UsersApiResource {
     public List<GetUserResponse> response(){
         List<GetUserResponse> response = this.service.getAllUsers();
         return response;
+    }
+
+    @GetMapping("/{id}")
+    public List<GetUserResponse> response(@PathVariable("id") final Long id){
+        List<GetUserResponse> getUserById = this.service.getUserById(id);
+        return getUserById;
+        
     }
 }
