@@ -1,4 +1,4 @@
-package com.website.User.api;
+package com.website.User.data;
 
 import lombok.Builder;
 import lombok.Data;
