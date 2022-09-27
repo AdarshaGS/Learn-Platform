@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
+import com.website.User.data.GetUserResponse;
 import com.website.User.service.UserService;
 
 @RestController
