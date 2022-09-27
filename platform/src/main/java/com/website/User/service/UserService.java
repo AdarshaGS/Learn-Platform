@@ -8,4 +8,5 @@ import com.website.User.data.CreateUserResponse;
 public interface UserService {
     CreateUserResponse createUser(CreateUserPayload payload);
     List<GetUserResponse> getAllUsers();
+    List<GetUserResponse> getUserById(Long id);
 }

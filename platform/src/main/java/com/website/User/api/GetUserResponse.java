@@ -11,4 +11,5 @@ public class GetUserResponse {
     public String lastName;
     public String email;
     public boolean isActive;
+    public String message;
 }
