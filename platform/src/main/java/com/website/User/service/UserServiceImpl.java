@@ -60,11 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<GetUserResponse> getUserById(Long id) {
         String sql = "select * from user where id = ?";
-        try {
             return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
-        } catch (Exception e) {
-            return (List<GetUserResponse>) GetUserResponse.builder().message("User Not Found").build();
-        }
     }
 
     private final static class GetUserResponseMapper implements RowMapper<GetUserResponse> {
