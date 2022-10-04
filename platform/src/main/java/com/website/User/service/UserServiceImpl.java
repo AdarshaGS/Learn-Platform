@@ -3,6 +3,8 @@ package com.website.User.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -11,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import com.website.User.Exception.EmailPatternException;
 import com.website.User.Repository.UserRepository;
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
     private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
+    private Pattern pattern;
 
     public UserServiceImpl(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -30,6 +34,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
+        String message = null;
+        String email = payload.getEmail(); 
+        String regex = "^(.+)@(gmail).(.+)$"; 
+        pattern = Pattern.compile(regex);   
+        Matcher matcher = pattern.matcher(email);
+        if(!matcher.matches()==true){
+            throw new EmailPatternException(message);
+        }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
                 .lastName(payload.getLastName()).email(payload.getEmail())
                 .isActive(true).build();
@@ -61,7 +73,6 @@ public class UserServiceImpl implements UserService {
     public List<GetUserResponse> getUserById(Long id) {
         String sql = "select * from user where id = ?";
             return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
-        
     }
 
     private final static class GetUserResponseMapper implements RowMapper<GetUserResponse> {

@@ -29,9 +29,9 @@ public class UsersApiResource {
     }
 
     @PostMapping("/create")
-    public CreateUserResponse response(@RequestBody CreateUserPayload payload) {
-        CreateUserResponse response = this.service.createUser(payload);
-        return response;
+    public CreateUserResponse createUser(@RequestBody CreateUserPayload payload) {
+            CreateUserResponse response = this.service.createUser(payload);
+            return response;     
     }
 
     @GetMapping
