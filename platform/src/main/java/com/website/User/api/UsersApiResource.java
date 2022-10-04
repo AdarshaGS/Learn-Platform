@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.website.User.Exception.UserNotFoundException;
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
 import com.website.User.data.GetUserResponse;
@@ -22,7 +23,7 @@ public class UsersApiResource {
 
     @Autowired
     private UserService service;
-
+    
     UsersApiResource(UserService userService) {
         this.service = userService;
     }
@@ -40,9 +41,13 @@ public class UsersApiResource {
     }
 
     @GetMapping("/{id}")
-    public List<GetUserResponse> retrieveUserById(@PathVariable("id") final Long id) {
+    public List<GetUserResponse> retrieveUserById(@PathVariable("id") final Long id, final String message) {
         List<GetUserResponse> getUserById = this.service.getUserById(id);
-        return getUserById;
+        if(!getUserById.isEmpty()){
+            return getUserById;
+        }else{
+            throw new UserNotFoundException(message);
+        }
     }
 
     @PutMapping("/update/{id}")

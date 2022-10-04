@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
     public List<GetUserResponse> getUserById(Long id) {
         String sql = "select * from user where id = ?";
             return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
+        
     }
 
     private final static class GetUserResponseMapper implements RowMapper<GetUserResponse> {
