@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 @SuppressWarnings("unused")
-public class UserNotFoundException extends RuntimeException {
+public class EmailNotFoundException extends RuntimeException{
     private String message; 
-    public UserNotFoundException(String message){
-    super("User not found");
+    public EmailNotFoundException(String message){
+    super("Cannot create Account with this Email Id");
     this.message = message;
 }
 }
-
