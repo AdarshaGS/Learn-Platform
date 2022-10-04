@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import com.website.User.Exception.EmailNotFoundException;
 import com.website.User.Exception.EmailPatternException;
 import com.website.User.Repository.UserRepository;
 import com.website.User.data.CreateUserPayload;
@@ -20,6 +21,7 @@ import com.website.User.data.CreateUserResponse;
 import com.website.User.data.GetUserResponse;
 
 @Service
+@SuppressWarnings("unused")
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private JdbcTemplate jdbcTemplate;
     private DataSource dataSource;
     private Pattern pattern;
+    private Matcher matcher;
 
     public UserServiceImpl(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -35,16 +38,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
         String message = null;
-        String email = payload.getEmail(); 
-        String regex = "^(.+)@(gmail).(.+)$"; 
-        pattern = Pattern.compile(regex);   
-        Matcher matcher = pattern.matcher(email);
+        String email = payload.getEmail();
+        String regex = "^(.+)@(gmail).(.+)$";
+        pattern = Pattern.compile(regex);
+        matcher = pattern.matcher(email);
         if(!matcher.matches()==true){
             throw new EmailPatternException(message);
         }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
                 .lastName(payload.getLastName()).email(payload.getEmail())
                 .isActive(true).build();
+        List<GetUserResponse> validateEmail = retrieveByEmailId(payload.getEmail());
+        if (!validateEmail.isEmpty()) {
+            throw new EmailNotFoundException(message);
+        }
         this.repository.save(response);
         return CreateUserResponse.builder().ResourceId(response.getId()).message("User Created").build();
     }
@@ -72,7 +79,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<GetUserResponse> getUserById(Long id) {
         String sql = "select * from user where id = ?";
-            return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
+        return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
     }
 
     private final static class GetUserResponseMapper implements RowMapper<GetUserResponse> {
@@ -95,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserResponse update(Long id, CreateUserPayload payload) { 
+    public GetUserResponse update(Long id, CreateUserPayload payload) {
         try {
             CreateUserPayload existingUser = this.repository.findById(id).get();
             if (existingUser != null) {
@@ -112,4 +119,9 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
+    public List<GetUserResponse> retrieveByEmailId(String email) {
+        String sql = "select * from user where email = ?";
+        return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { email });
+    }
 }

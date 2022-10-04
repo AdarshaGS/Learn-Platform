@@ -55,4 +55,10 @@ public class UsersApiResource {
         GetUserResponse updateUser = this.service.update(id, payload);
         return updateUser;
     }
+
+    @GetMapping("/email/{email}")
+    public List<GetUserResponse> retrieveUserByEmail(@PathVariable("email") final String email){
+        List<GetUserResponse> retrieveByEmail = this.service.retrieveByEmailId(email);
+        return retrieveByEmail;
+    }
 }
