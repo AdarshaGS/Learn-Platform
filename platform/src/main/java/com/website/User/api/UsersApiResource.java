@@ -23,29 +23,29 @@ public class UsersApiResource {
 
     @Autowired
     private UserService service;
-    
+
     UsersApiResource(UserService userService) {
         this.service = userService;
     }
 
     @PostMapping("/create")
     public CreateUserResponse createUser(@RequestBody CreateUserPayload payload) {
-            CreateUserResponse response = this.service.createUser(payload);
-            return response;     
+        CreateUserResponse response = this.service.createUser(payload);
+        return response;
     }
 
     @GetMapping
-    public List<GetUserResponse> response() {
-        List<GetUserResponse> response = this.service.getAllUsers();
+    public List<CreateUserPayload> response() {
+        List<CreateUserPayload> response = this.service.getAllUsers();
         return response;
     }
 
     @GetMapping("/{id}")
-    public List<GetUserResponse> retrieveUserById(@PathVariable("id") final Long id, final String message) {
-        List<GetUserResponse> getUserById = this.service.getUserById(id);
-        if(!getUserById.isEmpty()){
+    public List<CreateUserPayload> retrieveUserById(@PathVariable("id") final Long id, final String message) {
+        List<CreateUserPayload> getUserById = this.service.getUserById(id);
+        if (!getUserById.isEmpty()) {
             return getUserById;
-        }else{
+        } else {
             throw new UserNotFoundException(message);
         }
     }
@@ -57,8 +57,8 @@ public class UsersApiResource {
     }
 
     @GetMapping("/email/{email}")
-    public List<GetUserResponse> retrieveUserByEmail(@PathVariable("email") final String email){
-        List<GetUserResponse> retrieveByEmail = this.service.retrieveByEmailId(email);
+    public List<CreateUserPayload> retrieveUserByEmail(@PathVariable("email") final String email) {
+        List<CreateUserPayload> retrieveByEmail = this.service.retrieveByEmailId(email);
         return retrieveByEmail;
     }
 }

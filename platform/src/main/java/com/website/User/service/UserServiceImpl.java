@@ -1,7 +1,5 @@
 package com.website.User.service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +8,6 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import com.website.User.Exception.EmailNotFoundException;
@@ -26,14 +23,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository repository;
-    private JdbcTemplate jdbcTemplate;
-    private DataSource dataSource;
     private Pattern pattern;
     private Matcher matcher;
-
-    public UserServiceImpl(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
@@ -42,14 +33,14 @@ public class UserServiceImpl implements UserService {
         String regex = "^(.+)@(gmail).(.+)$";
         pattern = Pattern.compile(regex);
         matcher = pattern.matcher(email);
-        if(!matcher.matches()==true){
+        if (!matcher.matches() == true) {
             throw new EmailPatternException(message);
         }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
                 .lastName(payload.getLastName()).email(payload.getEmail())
                 .isActive(true).build();
-        List<GetUserResponse> validateEmail = retrieveByEmailId(payload.getEmail());
-        if (!validateEmail.isEmpty()) {
+        String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
+        if (validateEmail.isEmpty()) {
             throw new EmailNotFoundException(message);
         }
         this.repository.save(response);
@@ -57,48 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUserResponse> getAllUsers() {
-        String sql = "select * from user";
-        return this.jdbcTemplate.query(sql, new GetAllUsersMapper());
-    }
-
-    private final static class GetAllUsersMapper implements RowMapper<GetUserResponse> {
-        @Override
-        public GetUserResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
-            final Long id = rs.getLong("id");
-            final String firstName = rs.getString("firstname");
-            ;
-            final String lastName = rs.getString("lastname");
-            final String email = rs.getString("email");
-            final boolean isActive = rs.getBoolean("is_active");
-            return GetUserResponse.builder().id(id).firstName(firstName).lastName(lastName)
-                    .email(email).isActive(isActive).build();
-        }
+    public List<CreateUserPayload> getAllUsers() {
+        return this.repository.getAll();
     }
 
     @Override
-    public List<GetUserResponse> getUserById(Long id) {
-        String sql = "select * from user where id = ?";
-        return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { id });
-    }
-
-    private final static class GetUserResponseMapper implements RowMapper<GetUserResponse> {
-        @Override
-        public GetUserResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
-            final Long id = rs.getLong("id");
-            final String firstName = rs.getString("firstname");
-            ;
-            final String lastName = rs.getString("lastname");
-            final String email = rs.getString("email");
-            final boolean isActive = rs.getBoolean("is_active");
-            return GetUserResponse.builder()
-                    .id(id)
-                    .firstName(firstName)
-                    .lastName(lastName)
-                    .email(email)
-                    .isActive(isActive)
-                    .build();
-        }
+    public List<CreateUserPayload> getUserById(Long id) {
+        return this.repository.getUserById(id);
     }
 
     @Override
@@ -120,8 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUserResponse> retrieveByEmailId(String email) {
-        String sql = "select * from user where email = ?";
-        return this.jdbcTemplate.query(sql, new GetUserResponseMapper(), new Object[] { email });
+    public List<CreateUserPayload> retrieveByEmailId(String email) {
+        return this.repository.getUserByEmail(email);
     }
 }
