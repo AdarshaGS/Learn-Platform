@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.website.User.Exception.EmailNotFoundException;
@@ -62,12 +59,18 @@ public class UserServiceImpl implements UserService {
         try {
             CreateUserPayload existingUser = this.repository.findById(id).get();
             if (existingUser != null) {
-                existingUser.setFirstName(payload.getFirstName());
-                existingUser.setLastName(payload.getLastName());
-                existingUser.setEmail(payload.getEmail());
-                this.repository.save(existingUser);
-                return GetUserResponse.builder().message("User Updated with " + existingUser.getFirstName()
-                        + " " + existingUser.getLastName() + " " + existingUser.getEmail()).build();
+                String checkForDuplicateEmail = payload.getEmail();
+                String existingUserEmail = existingUser.getEmail();
+                if (existingUserEmail.equals(checkForDuplicateEmail)) {
+                    return GetUserResponse.builder().message("Duplicate Email Found").build();
+                } else {
+                    existingUser.setFirstName(payload.getFirstName());
+                    existingUser.setLastName(payload.getLastName());
+                    existingUser.setEmail(payload.getEmail());
+                    this.repository.save(existingUser);
+                    return GetUserResponse.builder().message("User Updated with " + existingUser.getFirstName()
+                            + " " + existingUser.getLastName() + " " + existingUser.getEmail()).build();
+                }
             }
         } catch (Throwable e) {
             return GetUserResponse.builder().message("User not found").build();
