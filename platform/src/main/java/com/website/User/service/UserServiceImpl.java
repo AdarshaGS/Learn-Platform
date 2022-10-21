@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.website.User.Exception.EmailNotFoundException;
 import com.website.User.Exception.EmailPatternException;
+import com.website.User.Exception.MobileNumberPatternException;
 import com.website.User.Repository.UserRepository;
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
@@ -20,21 +21,26 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository repository;
-    private Pattern pattern;
-    private Matcher matcher;
+    private Pattern emailPattern, mobileNumPattern;
+    private Matcher emailMatcher, mobileMatcher;
 
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
         String message = null;
         String email = payload.getEmail();
-        String regex = "^(.+)@(gmail).(.+)$";
-        pattern = Pattern.compile(regex);
-        matcher = pattern.matcher(email);
-        if (!matcher.matches() == true) {
-            throw new EmailPatternException(message);
+        String emailRegex = "^(.+)@(gmail).(.+)$";
+        String mobileRegex = "^(\\d{3}[- .]?){2}\\d{4}$";
+        emailPattern = Pattern.compile(emailRegex);
+        mobileNumPattern = Pattern.compile(emailRegex);
+        emailMatcher = emailPattern.matcher(email);
+        mobileMatcher = mobileNumPattern.matcher(mobileRegex);
+        if (!emailMatcher.matches() == true) {
+            throw new EmailPatternException(message);}
+        else if(!mobileMatcher.matches()){
+            throw new MobileNumberPatternException(message);
         }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
-                .lastName(payload.getLastName()).email(payload.getEmail())
+                .lastName(payload.getLastName()).email(payload.getEmail()).mobileNumber(payload.getMobileNumber())
                 .isActive(true).build();
         String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
         if (validateEmail.isEmpty()) {
