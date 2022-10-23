@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class EmailFoundException extends RuntimeException{
     private String message; 
     public EmailFoundException(String message){
-    super("Cannot create Account with this Email Id");
+    super("Duplicate Email Found");
     this.message = message;
 }
 }
