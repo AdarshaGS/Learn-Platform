@@ -51,9 +51,14 @@ public class UsersApiResource {
     }
 
     @PutMapping("/update/{id}")
-    public GetUserResponse UpdateUser(@PathVariable("id") final Long id, @RequestBody CreateUserPayload payload) {
-        GetUserResponse updateUser = this.service.update(id, payload);
-        return updateUser;
+    public GetUserResponse UpdateUser(@PathVariable("id") final Long id, @RequestBody CreateUserPayload payload,
+            String message) {
+        try {
+            GetUserResponse updateUser = this.service.update(id, payload);
+            return updateUser;
+        } catch (Exception e) {
+            throw new UserNotFoundException(message);
+        }
     }
 
     @GetMapping("/email/{email}")
@@ -63,7 +68,7 @@ public class UsersApiResource {
     }
 
     @GetMapping("/mobile/{mobileNum}")
-    public List<CreateUserPayload> retrieveUserByMobileNumber(@PathVariable("mobileNum") final Long mobileNum){
+    public List<CreateUserPayload> retrieveUserByMobileNumber(@PathVariable("mobileNum") final Long mobileNum) {
         List<CreateUserPayload> retrieveByMobile = this.service.retrieveByMobileNumber(mobileNum);
         return retrieveByMobile;
     }

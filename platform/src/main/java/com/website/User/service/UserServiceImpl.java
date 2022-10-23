@@ -58,7 +58,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public GetUserResponse update(Long id, CreateUserPayload payload) {
         String message = null;
-        try {
             CreateUserPayload existingUser = this.repository.findById(id).get();
             if (existingUser != null) {
                 String validateEmail = payload.getEmail();
@@ -77,9 +76,10 @@ public class UserServiceImpl implements UserService {
                             + " " + existingUser.getLastName() + " " + existingUser.getEmail()).build();
                 }
             }
-        } catch (Throwable e) {
-            return GetUserResponse.builder().message("User not found").build();
-        }
+            
+        // } catch (Throwable e) {
+        //     return GetUserResponse.builder().message("User not found").build();
+        // }
         return null;
     }
 
