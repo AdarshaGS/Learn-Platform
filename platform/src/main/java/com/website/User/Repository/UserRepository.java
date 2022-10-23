@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<CreateUserPayload, Long>, 
     @Query(value = "select * from user where email = :email", nativeQuery = true)
     List<CreateUserPayload> getUserByEmail(final String email);
 
+    @Query(value = "select * from user where mobile_num = :mobileNum", nativeQuery = true)
+    List<CreateUserPayload> getUserByMobileNumber(final Long mobileNum);
+
 }

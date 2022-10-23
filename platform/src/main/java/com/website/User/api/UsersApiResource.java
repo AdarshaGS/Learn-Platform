@@ -61,4 +61,10 @@ public class UsersApiResource {
         List<CreateUserPayload> retrieveByEmail = this.service.retrieveByEmailId(email);
         return retrieveByEmail;
     }
+
+    @GetMapping("/mobile/{mobileNum}")
+    public List<CreateUserPayload> retrieveUserByMobileNumber(@PathVariable("mobileNum") final Long mobileNum){
+        List<CreateUserPayload> retrieveByMobile = this.service.retrieveByMobileNumber(mobileNum);
+        return retrieveByMobile;
+    }
 }
