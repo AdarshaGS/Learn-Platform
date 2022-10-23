@@ -33,6 +33,9 @@ public class CreateUserPayload {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "mobile_num")
+    private Long mobileNum;
+
     @Column(name = "is_active")
     private boolean isActive;
 }
