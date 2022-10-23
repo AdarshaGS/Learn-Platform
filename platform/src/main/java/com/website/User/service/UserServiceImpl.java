@@ -7,9 +7,8 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.website.User.Exception.EmailNotFoundException;
+import com.website.User.Exception.DuplicateEmailFoundException;
 import com.website.User.Exception.EmailPatternException;
-import com.website.User.Exception.MobileNumberPatternException;
 import com.website.User.Repository.UserRepository;
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
@@ -21,30 +20,25 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository repository;
-    private Pattern emailPattern, mobileNumPattern;
-    private Matcher emailMatcher, mobileMatcher;
+    private Pattern emailPattern;
+    private Matcher emailMatcher;
 
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
         String message = null;
         String email = payload.getEmail();
         String emailRegex = "^(.+)@(gmail).(.+)$";
-        String mobileRegex = "^(\\d{3}[- .]?){2}\\d{4}$";
         emailPattern = Pattern.compile(emailRegex);
-        mobileNumPattern = Pattern.compile(emailRegex);
         emailMatcher = emailPattern.matcher(email);
-        mobileMatcher = mobileNumPattern.matcher(mobileRegex);
         if (!emailMatcher.matches() == true) {
-            throw new EmailPatternException(message);}
-        else if(!mobileMatcher.matches()){
-            throw new MobileNumberPatternException(message);
+            throw new EmailPatternException(message);
         }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
-                .lastName(payload.getLastName()).email(payload.getEmail()).mobileNumber(payload.getMobileNumber())
+                .lastName(payload.getLastName()).email(payload.getEmail())
                 .isActive(true).build();
         String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
-        if (validateEmail.isEmpty()) {
-            throw new EmailNotFoundException(message);
+        if (2!=validateEmail.length()) {
+                throw new DuplicateEmailFoundException(message);
         }
         this.repository.save(response);
         return CreateUserResponse.builder().ResourceId(response.getId()).message("User Created").build();
@@ -86,6 +80,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<CreateUserPayload> retrieveByEmailId(String email) {
-        return this.repository.getUserByEmail(email);
+            return this.repository.getUserByEmail(email);
     }
 }
