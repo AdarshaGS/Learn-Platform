@@ -53,12 +53,8 @@ public class UsersApiResource {
     @PutMapping("/update/{id}")
     public GetUserResponse UpdateUser(@PathVariable("id") final Long id, @RequestBody CreateUserPayload payload,
             String message) {
-        try {
-            GetUserResponse updateUser = this.service.update(id, payload);
+        GetUserResponse updateUser = this.service.update(id, payload);
             return updateUser;
-        } catch (Exception e) {
-            throw new UserNotFoundException(message);
-        }
     }
 
     @GetMapping("/email/{email}")
