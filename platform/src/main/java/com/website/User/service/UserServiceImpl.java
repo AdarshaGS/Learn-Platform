@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
                 .isActive(true).build();
         String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
         String validateMobileNumber = retrieveByMobileNumber(payload.getMobileNum()).toString();
-        if (2 != validateEmail.length() || !validateMobileNumber.isEmpty()) {
+        if (2 != validateEmail.length() || validateMobileNumber.length()!=2) {
             throw new DuplicateEntityFoundException(message);
         }
         this.repository.save(response);
@@ -76,10 +76,6 @@ public class UserServiceImpl implements UserService {
                             + " " + existingUser.getLastName() + " " + existingUser.getEmail()).build();
                 }
             }
-            
-        // } catch (Throwable e) {
-        //     return GetUserResponse.builder().message("User not found").build();
-        // }
         return null;
     }
 
