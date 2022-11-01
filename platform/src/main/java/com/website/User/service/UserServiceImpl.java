@@ -1,14 +1,11 @@
 package com.website.User.service;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.website.User.Exception.DuplicateEntityFoundException;
-import com.website.User.Exception.EmailPatternException;
 import com.website.User.Repository.UserRepository;
 import com.website.User.data.CreateUserPayload;
 import com.website.User.data.CreateUserResponse;
@@ -20,22 +17,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository repository;
-    private Pattern emailPattern;
-    private Matcher emailMatcher;
 
     @Override
     public CreateUserResponse createUser(CreateUserPayload payload) {
         String message = null;
-        String email = payload.getEmail();
-        String emailRegex = "^(.+)@(gmail).(.+)$";
-        emailPattern = Pattern.compile(emailRegex);
-        emailMatcher = emailPattern.matcher(email);
-        if (!emailMatcher.matches() == true) {
-            throw new EmailPatternException(message);
-        }
+        this.repository.validateForEmailPattern(payload.getEmail());
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
                 .lastName(payload.getLastName()).email(payload.getEmail()).mobileNum(payload.getMobileNum())
-                .gender(payload.getGender()).isActive(true).build();
+                .gender(payload.getGender()).isActive(false).build();
         String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
         String validateMobileNumber = retrieveByMobileNumber(payload.getMobileNum()).toString();
         if (2 != validateEmail.length() || validateMobileNumber.length()!=2) {
