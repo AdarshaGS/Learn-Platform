@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         }
         CreateUserPayload response = CreateUserPayload.builder().firstName(payload.getFirstName())
                 .lastName(payload.getLastName()).email(payload.getEmail()).mobileNum(payload.getMobileNum())
-                .isActive(true).build();
+                .gender(payload.getGender()).isActive(true).build();
         String validateEmail = retrieveByEmailId(payload.getEmail()).toString();
         String validateMobileNumber = retrieveByMobileNumber(payload.getMobileNum()).toString();
         if (2 != validateEmail.length() || validateMobileNumber.length()!=2) {
@@ -84,8 +84,7 @@ public class UserServiceImpl implements UserService {
         return this.repository.getUserByEmail(email);
     }
 
-    @Override
-    public List<CreateUserPayload> retrieveByMobileNumber(Long mobileNum) {
+    public List<CreateUserPayload> retrieveByMobileNumber(String mobileNum) {
         return this.repository.getUserByMobileNumber(mobileNum);
     }
 }

@@ -17,5 +17,5 @@ public interface UserService {
 
     List<CreateUserPayload> retrieveByEmailId(String email);
 
-    List<CreateUserPayload> retrieveByMobileNumber(Long mobileNum);
+    List<CreateUserPayload> retrieveByMobileNumber(String mobileNum);
 }
