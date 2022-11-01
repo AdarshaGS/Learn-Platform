@@ -64,7 +64,7 @@ public class UsersApiResource {
     }
 
     @GetMapping("/mobile/{mobileNum}")
-    public List<CreateUserPayload> retrieveUserByMobileNumber(@PathVariable("mobileNum") final Long mobileNum) {
+    public List<CreateUserPayload> retrieveUserByMobileNumber(@PathVariable("mobileNum") final String mobileNum) {
         List<CreateUserPayload> retrieveByMobile = this.service.retrieveByMobileNumber(mobileNum);
         return retrieveByMobile;
     }

@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<CreateUserPayload, Long>, 
     List<CreateUserPayload> getUserByEmail(final String email);
 
     @Query(value = "select * from user where mobile_num = :mobileNum", nativeQuery = true)
-    List<CreateUserPayload> getUserByMobileNumber(final Long mobileNum);
+    List<CreateUserPayload> getUserByMobileNumber(final String mobileNum);
 
 }
